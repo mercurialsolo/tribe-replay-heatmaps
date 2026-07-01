@@ -1,0 +1,6 @@
+# Analysis runs on Modal (GPU). These are the CPU-side deps for local analysis/figures.
+modal
+numpy
+scipy
+nilearn
+matplotlib

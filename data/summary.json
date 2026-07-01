@@ -1,0 +1,37 @@
+{
+  "n": 48,
+  "n_total": 50,
+  "pooled_raw_r": 0.036,
+  "pooled_partial_r_TRIBE": 0.0572,
+  "pooled_partial_r_loudness": 0.0395,
+  "pooled_partial_r_motion": -0.0612,
+  "mean_partial_r": 0.0583,
+  "sd_partial_r": 0.33,
+  "share_partial_positive": "28/48",
+  "per_category_partial_r": {
+    "music": 0.114,
+    "?": 0.282,
+    "tech": -0.159,
+    "gaming": -0.645,
+    "comedy": 0.247,
+    "reaction": 0.325,
+    "talk": -0.007,
+    "education": -0.214,
+    "food": 0.112,
+    "trailer": 0.082,
+    "science": -0.052
+  },
+  "per_category_n": {
+    "music": 17,
+    "?": 4,
+    "tech": 4,
+    "gaming": 1,
+    "comedy": 4,
+    "reaction": 2,
+    "talk": 5,
+    "education": 4,
+    "food": 3,
+    "trailer": 1,
+    "science": 3
+  }
+}
