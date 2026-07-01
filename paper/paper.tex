@@ -48,22 +48,20 @@ Cabal AI & Para AI
 
 % --- Abstract in a gray box (Meta FAIR style, no "Abstract" heading) ---
 \abstractbox{%
-Deep multimodal brain-encoding models predict fMRI responses to naturalistic video accurately
-enough to ask a further question: do their \emph{predicted} neural signals also forecast
-real-world behavioral engagement? We test this at scale. We run TRIBE, the winning model of the
-2025 Algonauts brain-encoding challenge (Llama-3.2 + V-JEPA2 + Wav2Vec-BERT), on YouTube videos,
-derive a per-second predicted-engagement curve (the global field power of the predicted cortical
-response), and correlate it against each video's crowd-sourced ``most replayed'' heatmap, a
-passively-collected proxy for which moments viewers return to. Across 48 videos spanning 11
-content categories, this signal shows no evidence of predicting re-watch behavior: the pooled
-position-controlled partial correlation is $+0.058$ (95\% CI $[-0.04, 0.15]$; one-sample
-$t(47)=1.21$, $p=0.23$), indistinguishable from zero, and it does not exceed simple low-level
-baselines (audio loudness $+0.04$, paired $p=0.74$; visual motion $-0.06$). Even the raw
-correlation is $\approx 0$ on this set; the moderate raw correlations obtained for music videos
-are a genre-specific intro/onset-replay artifact that does not generalize. For the most-replayed
-target and a global-field-power readout, predicted-fMRI engagement does not predict re-watch
-behavior beyond temporal position and low-level audiovisual features. We release the full pipeline,
-including an acquisition method that works despite YouTube's SABR-only streaming.
+Deep multimodal brain-encoding models now predict fMRI responses to naturalistic video with high
+accuracy. Whether their \emph{predicted} neural signals also forecast behavioral engagement is
+unknown. We run TRIBE, the winning model of the 2025 Algonauts brain-encoding challenge
+(Llama-3.2 + V-JEPA2 + Wav2Vec-BERT), on 48 YouTube videos and reduce its predicted cortical
+response to a per-second engagement curve, the global field power. Correlated against each video's
+``most replayed'' heatmap, a passively-collected proxy for which moments viewers return to, the
+curve shows no evidence of predicting re-watch behavior. The pooled position-controlled partial
+correlation is $+0.058$ (95\% CI $[-0.04, 0.15]$; one-sample $t(47)=1.21$, $p=0.23$),
+indistinguishable from zero and not significantly above simple loudness and motion baselines
+(loudness $+0.04$, paired $p=0.74$). The raw correlation is also near zero; the moderate values reported for music
+videos reflect a genre-specific intro/onset-replay artifact rather than content prediction, and do
+not generalize. The null holds across six cortical-network readouts and under an
+autocorrelation-preserving permutation test. We release the code, the video-ID manifest, and an
+acquisition method that works despite YouTube's SABR-only streaming.
 
 \vspace{4pt}
 \textbf{Date:}~\today \\
@@ -82,16 +80,19 @@ popularity~\citep{berns2012neural} to crowdfunding and market outcomes~\citep{ge
 and that the temporal reliability of neural processing tracks audience
 preferences~\citep{dmochowski2014audience,hasson2004intersubject}.
 
-Whether \emph{predicted} neural signals, which need no scanner and are cheap to compute, inherit
-this predictive power has not been tested. We provide the first evaluation of a predicted-fMRI
-engagement signal against a large, passively-collected behavioral target: YouTube's ``most
-replayed'' heatmaps. We contribute (i)~a method to turn TRIBE predictions into a per-second
-engagement curve and evaluate it against most-replayed; (ii)~a position-controlled and baseline-controlled
-evaluation across a category-diverse sample; (iii)~a reproducible null result; and (iv)~an
-acquisition and scoring pipeline we release, including a workaround for YouTube's SABR-only
-streaming.
+Whether \emph{predicted} neural signals, which require no scanner and are inexpensive to compute,
+inherit this predictive power has not been tested. The expected direction is not obvious. An
+accurate encoder might preserve the behaviorally-relevant structure of the measured response; it
+might equally regress that structure toward the group mean, discarding exactly the individual and
+reward-region variability that the neuroforecasting effect depends on (\S\ref{sec:related}). To
+adjudicate, we take TRIBE without modification, reduce its prediction to a per-second engagement
+curve, and test that curve against YouTube's ``most replayed'' heatmaps. The correlation is absent.
+Establishing this meant separating a genuine null from the confounds that would mimic one: temporal
+position, low-level loudness and motion, and the whole-cortex readout. It also meant obtaining the
+videos in the first place, which YouTube's SABR streaming places beyond standard download tools. The
+code, the video-ID manifest, and the acquisition pipeline are released.
 
-\section{Related Work}
+\section{Related Work}\label{sec:related}
 \paragraph{Brain encoding of naturalistic stimuli.} Voxel-wise and surface-based encoding models
 predict fMRI responses to video/audio/text; TRIBE fuses Llama-3.2~\citep{grattafiori2024llama},
 V-JEPA2~\citep{bardes2024vjepa}, and Wav2Vec-BERT features and predicts per-TR responses on the
@@ -167,8 +168,9 @@ $1$\,fps, $64{\times}36$ grayscale frames. TRIBE is deemed predictive only if $r
 clearly exceeds these.
 
 \section{System and Pipeline}
-A practical contribution of this work is an end-to-end pipeline that makes the study feasible and
-fully reproducible despite two obstacles: YouTube's anti-download measures and the cost of encoding.
+The study depends on two non-standard pieces of infrastructure: a means of obtaining the videos and
+a means of encoding them at acceptable cost. YouTube's current streaming defeats common download
+tools, and V-JEPA2 encoding dominates runtime. We describe how the released pipeline addresses both.
 
 \paragraph{Acquisition under SABR.} As of 2025 YouTube serves most popular videos via SABR
 (server-side adaptive bitrate) streaming, which exposes no directly downloadable media; standard
@@ -275,12 +277,15 @@ well within the null distribution (two-tailed $p=0.12$), consistent with the par
 confirming that the near-zero effect is not an artifact of temporal autocorrelation.
 
 \section{Discussion}
-Once temporal position is controlled, TRIBE's predicted engagement has no detectable relationship
-with what viewers re-watch, and it does not beat a simple loudness curve. The strong correlations a
-music-only, non-position-controlled analysis would report do not generalize, which bears on the
-practice of repurposing brain-encoding models as off-the-shelf engagement predictors. Several
-caveats bound the claim: most-replayed is a noisy, biased behavioral target; we analyze a $60$\,s
-window; and TRIBE was optimized for fMRI accuracy, not behavior. Two natural alternatives are also
+The apparent signal is fragile. In a music-only pilot the raw correlation was moderate to strong
+($0.3$--$0.8$), but it survives neither the extension to non-music content nor a first-order
+position control. After that control, TRIBE's predicted drive has no detectable relationship with
+what viewers re-watch and does not exceed a loudness baseline. This bears on the use of
+brain-encoding models as off-the-shelf engagement predictors: the initial correlation reflects
+temporal position and genre rather than content-specific neural drive. Several factors bound the
+claim in the opposite direction: most-replayed is a noisy and biased behavioral target; the
+analysis window is $60$\,s; and TRIBE was optimized for fMRI accuracy rather than a behavioral
+endpoint. Two natural alternatives are also
 ruled out here: restricting the readout to individual functional networks (including salience/reward)
 does not recover a signal, and a permutation null that respects temporal autocorrelation gives the
 same near-zero effect. A positive result may still require a cleaner behavioral target (view
@@ -288,13 +293,18 @@ trajectories or breakout) or a model fine-tuned for the behavioral endpoint rath
 accuracy.
 
 \section{Conclusion}
-Predicted-fMRI engagement from TRIBE does not, in this evaluation, forecast YouTube re-watch
-behavior beyond temporal position and low-level audiovisual features. We release the pipeline and
-encourage tests with richer readouts and behavioral targets.
+For this target and this readout, a predicted-fMRI drive signal from TRIBE does not forecast YouTube
+re-watch behavior beyond temporal position and low-level features. The scope of the claim is
+deliberately narrow: a single model, a single scalar readout, a biased behavioral target, and a
+$60$\,s window. Whether a richer readout or a cleaner behavioral signal would alter the result
+remains open. Code and video IDs are released to enable such tests.
 
 \section*{Reproducibility}
 Code (scoring, position-controlled validation, baselines, SABR-resilient acquisition, encoding
-cache) and the list of video IDs with their most-replayed heatmaps are released with the paper.
+cache), the manifest of YouTube video IDs, and per-video results are available at
+\url{https://github.com/mercurialsolo/tribe-replay-heatmaps}. We do not redistribute video or fMRI
+data; the most-replayed heatmaps are public YouTube metadata fetched per ID, so the full analysis
+is reproducible from the released IDs and code.
 
 \begin{thebibliography}{9}
 \bibitem[Bardes et al.(2024)]{bardes2024vjepa} A.~Bardes, Q.~Garrido, J.~Ponce, X.~Chen,
