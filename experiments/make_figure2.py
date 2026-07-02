@@ -21,7 +21,7 @@ def make():
     e1 = w1["E1_equivalence_bayes"]; roi = w1["E3_signed_roi"]
 
     plt.rcParams.update({"font.size": 9, "axes.spines.top": False, "axes.spines.right": False})
-    fig, ax = plt.subplots(1, 4, figsize=(13, 3.1))
+    fig, ax = plt.subplots(1, 4, figsize=(13, 3.6))
 
     # (a) equivalence + Bayes
     m = e1["mean"]; lo, hi = e1["ci95"]; delta = e1["smallest_equiv_delta"]
@@ -33,17 +33,20 @@ def make():
     ax[0].legend(fontsize=6, frameon=False, loc="upper right")
 
     # (b) network + signed-ROI readouts
-    nets = {"whole-cortex (GFP)": 0.058, "visual": -0.010, "auditory": 0.065,
+    nets = {"whole-cortex": 0.058, "visual": -0.010, "auditory": 0.065,
             "salience": 0.001, "frontal": 0.023, "parietal": 0.088}
+    short = {"vmPFC/MPFC (signed)": "vmPFC*", "ACC (signed)": "ACC*",
+             "anterior insula (signed)": "ant-insula*"}
     for k, v in roi.items():
         if v.get("pooled_partial_r") is not None and "whole-cortex" not in k:
-            nets[k.replace(" (signed)", "*")] = v["pooled_partial_r"]
+            nets[short.get(k, k.replace(" (signed)", "*"))] = v["pooled_partial_r"]
     keys = list(nets); vals = [nets[k] for k in keys]; y = np.arange(len(keys))
     ax[1].axvline(0, color="0.6", lw=.8)
-    ax[1].barh(y, vals, color="#4C72B0", height=.6)
-    ax[1].set_yticks(y); ax[1].set_yticklabels(keys, fontsize=6)
+    ax[1].barh(y, vals, color="#4C72B0", height=.62)
+    ax[1].set_yticks(y); ax[1].set_yticklabels(keys, fontsize=7)
+    ax[1].invert_yaxis()  # whole-cortex at top
     ax[1].set_xlabel("pooled partial $r$"); ax[1].set_title("(b) All readouts null\n(* = signed ROI)")
-    ax[1].set_xlim(-0.15, 0.15)
+    ax[1].set_xlim(-0.15, 0.15); ax[1].tick_params(axis="y", pad=1)
 
     # (c) supervised probe collapse
     groups = ["quad\nprobe", "generic\nshape", "spline\nprobe", "spline\nmismatch"]

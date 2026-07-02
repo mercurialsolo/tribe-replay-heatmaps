@@ -68,7 +68,7 @@ predicted cortex appears to reach $r=0.47$ but this collapses to a shared tempor
 under a proper position control. Running the same probe on the raw V-JEPA 2 visual features TRIBE
 ingests reveals a small but reliable content-specific signal (matched vs.\ mismatched $p=0.004$)
 that the predicted cortex does \emph{not} carry, locating the loss in the fMRI-encoding step. The
-inter-subject-correlation readout---the closest prior positive result at this grain---is
+inter-subject-correlation readout, the closest prior positive result at this grain, is
 structurally degenerate here: TRIBE's per-subject predictions are near-identical. We
 bound the claim rather than merely fail to reject it: a Bayes
 factor gives moderate evidence for the null ($\mathrm{BF}_{01}=3.2$), an equivalence test excludes
@@ -121,7 +121,7 @@ V-JEPA 2~\citep{assran2025vjepa2}, and Wav2Vec-BERT and predicting per-TR respon
 stated preference, but the relevant results differ in \emph{grain} from ours. Berns and
 Moore~\citep{berns2012neural} and Genevsky et al.~\citep{genevsky2017brain} are \emph{cross-item}:
 nucleus-accumbens and related reward activity, averaged over a stimulus, predicts which \emph{song}
-or \emph{crowdfunding project} succeeds across the population---not which moment \emph{within} a clip
+or \emph{crowdfunding project} succeeds across the population, not which moment \emph{within} a clip
 is re-watched. The closest analog for \emph{online content} is the valuation account of information
 virality~\citep{scholz2017virality}, in which ventral-striatal and vmPFC/MPFC activity predicts which
 New York Times articles are shared at scale; this too is cross-item, but it directly motivates the
@@ -300,7 +300,7 @@ computed the \emph{signed mean} response in canonical surface ROIs (vmPFC/MPFC, 
 anterior insula). These are null as well: vmPFC $+0.088$, ACC $+0.015$, anterior insula $+0.037$
 (all $95\%$ CIs cross zero, $n{=}48$). Spatially resolving the predicted response, signed or
 unsigned, does not recover a content-level re-watch signal. A caveat of first importance: the
-nucleus accumbens / ventral striatum---a primary neuroforecasting locus---is
+nucleus accumbens / ventral striatum, a primary neuroforecasting locus, is
 subcortical and \emph{absent} from the \texttt{fsaverage5} surface mesh, so this test reaches at
 most its cortical shadow (\S\ref{sec:limits}).
 
@@ -320,7 +320,7 @@ than $r\approx0.1$, which is the honest limit of an $n{=}48$ sample. Descriptive
 $[-0.02,0.14]$, so effects larger than $r\approx0.14$ are excluded. A default JZS Bayes factor for
 the one-sample test gives
 $\mathrm{BF}_{01}=3.2$: the data are about three times more likely under the null than under a
-diffuse alternative---moderate evidence \emph{for} no effect, not merely a failure to reject.
+diffuse alternative, moderate evidence \emph{for} no effect, not merely a failure to reject.
 This is not a low-ceiling artifact. Estimating the reliability of the most-replayed target by
 split-half correlation of its $100$ markers (odd vs.\ even, Spearman--Brown corrected) gives a
 median reliability of $0.82$, so even a perfect predictor is bounded near $r\approx0.9$; the target
@@ -356,7 +356,7 @@ detrend manufactures a large, cross-validated, entirely spurious correlation.
 \subsection{Where the signal is lost: features vs.\ predicted cortex}\label{sec:features}
 The cortical probe's failure poses a mechanistic question: is a content-specific signal simply
 absent from the stimulus, or present in the model's inputs but discarded by the fMRI-encoding step?
-We run the identical probe---same spline position control, same matched/mismatched test---on the raw
+We run the identical probe, same spline position control, same matched/mismatched test, on the raw
 \textbf{V-JEPA 2} visual features TRIBE ingests (per-TR embeddings, $d{=}1024$). The features behave
 \emph{differently} from the predicted cortex. Their absolute predictive power is still low (pooled
 CV $r\approx0.12$), but under the spline control their predictions are genuinely
@@ -381,8 +381,8 @@ $r\approx0.9$ reliability ceiling, so this locates \emph{where} a small signal i
 recovering a strong one; and we tested only the visual stream.
 
 \subsection{The inter-subject-correlation route is structurally closed}\label{sec:isc}
-The one prior positive result at our grain---inter-subject correlation (ISC) of the neural
-time-course (\S\ref{sec:related})---requires \emph{per-subject} responses, which every analysis
+The one prior positive result at our grain, inter-subject correlation (ISC) of the neural
+time-course (\S\ref{sec:related}), requires \emph{per-subject} responses, which every analysis
 above obtains only after averaging over TRIBE's subject embeddings. TRIBE does carry subject
 embeddings ($4$ subjects for the Algonauts-2025 study), so rather than concede the point we test the
 ISC route directly: we generate per-subject predictions for all four subjects on all $48$ videos,
@@ -395,7 +395,7 @@ most-replayed is null and uninformative ($r=-0.01$, $p=0.67$). The substantive p
 not statistical: a group-trained encoder whose only subject-specific parameter is a small additive
 embedding cannot \emph{express} the inter-subject-reliability signal the ISC line depends on. The
 ISC route is thus closed not because we did not try it, but because this class of predicted-fMRI
-model produces no meaningful cross-subject divergence to correlate---itself a concrete limit on
+model produces no meaningful cross-subject divergence to correlate, itself a concrete limit on
 using such models for ISC-style neuroforecasting.
 
 \subsection{No duration or resolution confound}\label{sec:confound}
@@ -431,12 +431,12 @@ nor a first-order position control; and when a supervised readout appears to rec
 ($r=0.47$), that too dissolves into a shared temporal-shape artifact under an honest position
 control and a matched-versus-mismatched test. The recurring lesson is methodological: most-replayed
 carries a dominant, genre- and position-linked temporal shape, and any analysis that does not
-aggressively remove it---raw correlation, a coarse detrend, or a cross-validated probe on top of a
-coarse detrend---will report a spurious signal. This is a direct caution for the growing practice of
+aggressively remove it (raw correlation, a coarse detrend, or a cross-validated probe on top of a
+coarse detrend) will report a spurious signal. This is a direct caution for the growing practice of
 repurposing brain-encoding models as off-the-shelf engagement predictors. The dissociation between
 the visual features and the predicted cortex sharpens the point: a small content-specific signal
-does exist in TRIBE's inputs, but the fMRI-encoding step---the very thing that makes these models
-scientifically interesting---is where it is lost, not the readout or the target.
+does exist in TRIBE's inputs, but the fMRI-encoding step, the very thing that makes these models
+scientifically interesting, is where it is lost, not the readout or the target.
 
 What makes the null credible rather than merely unproven is the surrounding evidence. The target is
 reliable (split-half $\approx0.82$; ceiling $r\approx0.9$), so the near-zero result is not a
@@ -444,7 +444,7 @@ noisy-label artifact; a Bayes factor gives moderate evidence \emph{for} the null
 ($\mathrm{BF}_{01}=3.2$); an equivalence test rules out effects larger than $r\approx0.14$; and the
 result is stable under an autocorrelation-preserving permutation null. The claim we can defend is
 therefore specific: on this target and these readouts, predicted-fMRI drive from TRIBE carries
-\emph{approximately no} content-specific re-watch signal, up to a bound of $r\approx0.14$---not that
+\emph{approximately no} content-specific re-watch signal, up to a bound of $r\approx0.14$, not that
 the effect is exactly zero.
 
 \section{Limitations}\label{sec:limits}
@@ -457,7 +457,7 @@ effects, chapter markers, seek-back), and although we control position aggressiv
 target is reliable, a cleaner signal such as creator-side audience-retention would be preferable.
 Further: we analyze a $60$\,s window; our videos are all already popular (they require a heatmap),
 a range restriction that weakens the video-level ranking test; the inter-subject-correlation route
-is inaccessible here (\S\ref{sec:isc})---not because we average subjects but because TRIBE's
+is inaccessible here (\S\ref{sec:isc}), not because we average subjects but because TRIBE's
 per-subject predictions barely differ, a structural limit of the encoder rather than of our
 analysis; and $N=48$ with an imbalanced category mix is modest, though our pipeline makes scaling to
 hundreds of videos cheap.
@@ -472,7 +472,7 @@ aggregate metadata and no per-user data is used.
 
 \section{Conclusion}
 For this target and these readouts, a predicted-fMRI drive signal from TRIBE does not forecast
-YouTube re-watch behavior beyond temporal position and low-level features---and the null is backed
+YouTube re-watch behavior beyond temporal position and low-level features, and the null is backed
 by an equivalence bound, a Bayes factor, a target reliability ceiling, and the failure of a
 supervised readout that a naive detrend made look successful. Yet the story is not simply ``no
 signal anywhere'': the raw visual features carry a small content-specific signal that the
