@@ -1,0 +1,8 @@
+{
+  "n_videos": 48,
+  "gfp_timecourse_pairwise_corr": 1.0,
+  "per_vertex_ISC": 1.0,
+  "per_TR_spatial_pattern_corr": 1.0,
+  "mean_relative_between_subject_diff": 0.0,
+  "note": "canonical per-vertex ISC + GFP + spatial-pattern; all near 1 => predictions near-identical"
+}

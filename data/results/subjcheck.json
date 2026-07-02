@@ -1,0 +1,8 @@
+{
+  "average_subjects": true,
+  "subject_mapping": "None",
+  "module_path": "_model",
+  "subject_param_shapes": {},
+  "has_subject_embed": false,
+  "predictor.predictor.n_subjects": 0
+}

@@ -4,6 +4,7 @@
 \usepackage{booktabs}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{cmap}                       % proper ToUnicode CMaps so all glyphs (dashes, etc.) extract/copy
 \usepackage[T1]{fontenc}
 \usepackage{helvet}                     % Helvetica for the sans-serif title/headings
 \input{glyphtounicode}\pdfgentounicode=1 % ToUnicode map for the text layer
@@ -68,8 +69,9 @@ predicted cortex appears to reach $r=0.47$ but this collapses to a shared tempor
 under a proper position control. Running the same probe on the raw V-JEPA 2 visual features TRIBE
 ingests reveals a small but reliable content-specific signal (matched vs.\ mismatched $p=0.004$)
 that the predicted cortex does \emph{not} carry, locating the loss in the fMRI-encoding step. The
-inter-subject-correlation readout, the closest prior positive result at this grain, is
-structurally degenerate here: TRIBE's per-subject predictions are near-identical. We
+inter-subject-correlation readout, the closest prior positive result at this grain, is unavailable:
+the released TRIBE checkpoint is subject-averaged and carries no per-subject parameters, so it cannot
+produce the per-subject responses ISC requires. We
 bound the claim rather than merely fail to reject it: a Bayes
 factor gives moderate evidence for the null ($\mathrm{BF}_{01}=3.2$), an equivalence test excludes
 effects larger than $r\approx0.14$, and the target's split-half reliability ($\approx0.82$; ceiling
@@ -370,8 +372,11 @@ ones, and the direction is initially counter-intuitive: the cortex probe's match
 mismatched. For the cortex, matched $\approx$ mismatched ($0.14$ vs.\ $0.15$): its entire matched
 performance is a stereotyped shape that fits any video equally, so none of it is video-specific. For
 the features, matched $\gg$ mismatched ($0.13$ vs.\ $0.00$): a probe trained on them fits only the
-correct video. (``Mismatched'' here pairs each held-out video's probe prediction with every
-\emph{other} video's target on a common normalized-time grid, averaged.) That asymmetry is exactly
+correct video. Matched and mismatched are computed through an identical pipeline, differing only in
+the pairing: each held-out video's probe prediction is resampled to a common $50$-point
+normalized-time grid and correlated either with its \emph{own} target on that grid (matched) or,
+averaged, with every \emph{other} video's target on the same grid (mismatched), so the $0.13$-vs-$0$
+gap cannot be a grid or normalization artifact. That asymmetry is exactly
 the ``regress toward the mean'' concern of \S\ref{sec:related} made visible: a group-trained encoder
 collapses idiosyncratic responses toward a shared mean shape, so the predicted cortex retains the
 shape but not the video-specific structure the features still carry. Mapping the features onto that
@@ -380,23 +385,20 @@ Two caveats bound the finding: the feature signal is weak in absolute terms, far
 $r\approx0.9$ reliability ceiling, so this locates \emph{where} a small signal is lost rather than
 recovering a strong one; and we tested only the visual stream.
 
-\subsection{The inter-subject-correlation route is structurally closed}\label{sec:isc}
+\subsection{The inter-subject-correlation route is unavailable in the released model}\label{sec:isc}
 The one prior positive result at our grain, inter-subject correlation (ISC) of the neural
-time-course (\S\ref{sec:related}), requires \emph{per-subject} responses, which every analysis
-above obtains only after averaging over TRIBE's subject embeddings. TRIBE does carry subject
-embeddings ($4$ subjects for the Algonauts-2025 study), so rather than concede the point we test the
-ISC route directly: we generate per-subject predictions for all four subjects on all $48$ videos,
-form a per-TR ISC curve as the sliding-window mean pairwise correlation of the four predicted GFP
-time-courses, and run the same position-controlled analysis. The readout is \emph{degenerate}.
-Across subjects the predicted GFP time-courses are near-identical (mean pairwise correlation
-$\approx 1.0$): TRIBE's additive subject embedding induces negligible inter-subject variability in
-the predicted response, so the ISC curve is essentially constant and its partial correlation with
-most-replayed is null and uninformative ($r=-0.01$, $p=0.67$). The substantive point is structural,
-not statistical: a group-trained encoder whose only subject-specific parameter is a small additive
-embedding cannot \emph{express} the inter-subject-reliability signal the ISC line depends on. The
-ISC route is thus closed not because we did not try it, but because this class of predicted-fMRI
-model produces no meaningful cross-subject divergence to correlate, itself a concrete limit on
-using such models for ISC-style neuroforecasting.
+time-course (\S\ref{sec:related}), requires \emph{per-subject} responses. We attempted to compute it
+and found the released model cannot supply them. The public \texttt{facebook/tribev2} checkpoint was
+trained with subject averaging (\texttt{average\_subjects}\,=\,True); on inspection it contains
+\emph{no} subject-specific parameters at all: there is no subject-embedding layer, the subject-layer
+\texttt{n\_subjects} is $0$, and the subject mapping is empty. \texttt{predict} returns a single
+subject-averaged response, and setting the subject identifier at inference has no effect: the
+predictions for the four Algonauts subjects come out bit-identical (maximum absolute difference
+$0$). A predicted-ISC readout is therefore not merely weak but \emph{undefined} for the released
+model, since the per-subject responses ISC operates on do not exist; testing it would require a
+checkpoint trained with per-subject layers, which is not publicly available. This is itself
+informative: subject averaging, a reasonable choice for maximizing fMRI-prediction accuracy, removes
+by construction the very inter-subject structure the behavioral (ISC) result depends on.
 
 \subsection{No duration or resolution confound}\label{sec:confound}
 Because most-replayed's $100$ markers span the full clip, a short video contributes many in-window
@@ -436,7 +438,14 @@ coarse detrend) will report a spurious signal. This is a direct caution for the 
 repurposing brain-encoding models as off-the-shelf engagement predictors. The dissociation between
 the visual features and the predicted cortex sharpens the point: a small content-specific signal
 does exist in TRIBE's inputs, but the fMRI-encoding step, the very thing that makes these models
-scientifically interesting, is where it is lost, not the readout or the target.
+scientifically interesting, is where it is lost, not the readout or the target. Our two mechanistic
+observations are in fact one phenomenon seen twice. A group-trained encoder collapses idiosyncratic
+structure toward a shared mean: across videos, so the video-specific signal in the features survives
+in neither the predicted cortex nor the shared temporal shape the probe latches onto
+(\S\ref{sec:features}); and across subjects, so completely that the released checkpoint carries no
+per-subject parameters and cannot express inter-subject differences at all (\S\ref{sec:isc}). The
+same averaging that makes these models accurate predictors of the \emph{typical} cortical response
+is what removes the individual and moment-specific variation a behavioral signal would ride on.
 
 What makes the null credible rather than merely unproven is the surrounding evidence. The target is
 reliable (split-half $\approx0.82$; ceiling $r\approx0.9$), so the near-zero result is not a
@@ -457,10 +466,10 @@ effects, chapter markers, seek-back), and although we control position aggressiv
 target is reliable, a cleaner signal such as creator-side audience-retention would be preferable.
 Further: we analyze a $60$\,s window; our videos are all already popular (they require a heatmap),
 a range restriction that weakens the video-level ranking test; the inter-subject-correlation route
-is inaccessible here (\S\ref{sec:isc}), not because we average subjects but because TRIBE's
-per-subject predictions barely differ, a structural limit of the encoder rather than of our
-analysis; and $N=48$ with an imbalanced category mix is modest, though our pipeline makes scaling to
-hundreds of videos cheap.
+is inaccessible here (\S\ref{sec:isc}) because the released checkpoint is subject-averaged and
+contains no per-subject parameters, a property of the released model rather than of our analysis;
+and $N=48$ with an imbalanced category mix is modest, though our pipeline makes scaling to hundreds
+of videos cheap.
 
 \section*{Ethics and Broader Impact}
 A reliable predictor of moment-level engagement from brain-derived signals would have clear
