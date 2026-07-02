@@ -106,7 +106,7 @@ curve, and test that curve against YouTube's ``most replayed'' heatmaps. The cor
 Establishing this meant separating a genuine null from the confounds that would mimic one (temporal
 position, low-level loudness and motion, the choice of readout), and then \emph{bounding} the null
 rather than merely failing to reject it, with an equivalence test, a Bayes factor, and a target
-reliability ceiling. A striking by-product is a cautionary result in its own right: a supervised
+reliability ceiling. A by-product is a cautionary result: a supervised
 cross-validated readout of the predicted cortex appears to predict re-watch at $r=0.47$, yet this is
 entirely a shared temporal-shape artifact that vanishes under a proper position control, a concrete
 warning for anyone using most-replayed as a label. It also meant obtaining the videos at all, which
@@ -319,7 +319,7 @@ confirming that the near-zero effect is not an artifact of temporal autocorrelat
 A non-significant $p$ is not evidence of absence, so we quantify the evidence directly. A
 two-one-sided-tests (TOST) procedure against a pre-specified smallest effect of interest
 $\delta=0.10$ does \emph{not} reach equivalence ($p=0.20$): we cannot rule out a true effect smaller
-than $r\approx0.1$, which is the honest limit of an $n{=}48$ sample. Descriptively, the $90\%$ CI is
+than $r\approx0.1$, the limit of resolution at $n{=}48$. Descriptively, the $90\%$ CI is
 $[-0.02,0.14]$, so effects larger than $r\approx0.14$ are excluded. A default JZS Bayes factor for
 the one-sample test gives
 $\mathrm{BF}_{01}=3.2$: the data are about three times more likely under the null than under a
@@ -338,7 +338,7 @@ $20{,}484$-vertex predicted response is reduced to $100$ principal components (f
 training fold), ridge regression is fit to per-TR most-replayed, and performance is evaluated under
 grouped \textbf{leave-one-video-out} cross-validation (group $=$ video, so no within-video
 leakage), pooling per-video correlations as before. Under a quadratic position control this probe
-appears to succeed spectacularly, reaching pooled CV $r=0.47$. This figure is not comparable to the
+appears to succeed, reaching pooled CV $r=0.47$. This figure is not comparable to the
 GFP's per-video partial $r=0.058$ and does not imply a signal the GFP missed: a supervised,
 cross-validated readout can learn a temporal shape common to the training videos and apply it to a
 held-out one, which a single fixed per-video curve cannot, so a much larger number is expected even
@@ -354,7 +354,7 @@ curve than with an unrelated video's (matched $0.14$ vs.\ mismatched $0.15$; pai
 supervised learned readout of the predicted cortex therefore carries \emph{no} content-specific
 re-watch signal; the apparent success is the intro/onset-shape artifact operating at higher
 temporal order. This is a concrete caution for using most-replayed as a training label: a coarse
-detrend manufactures a large, cross-validated, entirely spurious correlation.
+detrend manufactures a large cross-validated correlation that is entirely spurious.
 
 \subsection{Where the signal is lost: input features vs.\ predicted cortex}\label{sec:features}
 The cortical probe's failure poses a mechanistic question: is a content-specific signal simply
@@ -381,7 +381,7 @@ run through an identical pipeline, differing only in the pairing: each held-out 
 resampled to a common $50$-point normalized-time grid and correlated with its \emph{own} target
 (matched) or, averaged, with every \emph{other} video's target on the same grid (mismatched), so the
 gap cannot be a grid or normalization artifact. To the extent the effect is real, it is the ``regress
-toward the mean'' tendency of \S\ref{sec:related} made visible: a group-trained encoder collapses
+toward the mean'' tendency of \S\ref{sec:related}: a group-trained encoder collapses
 idiosyncratic responses toward a shared mean, so the predicted cortex keeps the shape but not the
 faint video-specific structure the visual features carry. The finding is modest by construction: the
 signal is weak (pooled CV $r\approx0.12$, far below the target's $r\approx0.9$ ceiling) and confined
@@ -433,8 +433,8 @@ noise.}
 The apparent signal is fragile at every level we probed. In a music-only pilot the raw correlation
 was moderate to strong ($0.3$--$0.8$), but it survives neither the extension to non-music content
 nor a first-order position control; and when a supervised readout appears to recover a large effect
-($r=0.47$), that too dissolves into a shared temporal-shape artifact under an honest position
-control and a matched-versus-mismatched test. The recurring lesson is methodological: most-replayed
+($r=0.47$), that too dissolves into a shared temporal-shape artifact under a stricter position
+control and a matched-versus-mismatched test. The lesson is methodological: most-replayed
 carries a dominant, genre- and position-linked temporal shape, and any analysis that does not
 aggressively remove it (raw correlation, a coarse detrend, or a cross-validated probe on top of a
 coarse detrend) will report a spurious signal. This is a direct caution for the growing practice of
@@ -442,8 +442,8 @@ repurposing brain-encoding models as off-the-shelf engagement predictors. The fa
 between the visual input and the predicted cortex points the same way: what little content-specific
 signal appears anywhere (a borderline effect in the visual stream, nothing in audio, text, or the
 predicted cortex) is not carried by the encoded response, consistent with the loss being at the
-fMRI-encoding step rather than the readout or the target. Our two mechanistic observations then read
-as one phenomenon seen twice. A group-trained encoder collapses idiosyncratic structure toward a
+fMRI-encoding step rather than the readout or the target. The two mechanistic observations are the
+same phenomenon in two places. A group-trained encoder collapses idiosyncratic structure toward a
 shared mean: across videos, so the weak video-specific structure in the visual features survives in
 neither the predicted cortex nor the shared temporal shape the probe latches onto
 (\S\ref{sec:features}); and across subjects, so completely that the released checkpoint carries no
