@@ -6,7 +6,9 @@
 \usepackage{amssymb}
 \usepackage[T1]{fontenc}
 \usepackage{helvet}                     % Helvetica for the sans-serif title/headings
-\input{glyphtounicode}\pdfgentounicode=1 % make fi/fl/ff ligatures copy-paste and index correctly
+\input{glyphtounicode}\pdfgentounicode=1 % ToUnicode map for the text layer
+\usepackage[expansion=false,protrusion=false]{microtype} % expansion breaks with non-scalable Helvetica
+\DisableLigatures[f]{encoding = T1, family = *} % prevent fi/fl/ff ligatures (they were dropping on extraction)
 \usepackage{natbib}
 \usepackage{xcolor}
 \definecolor{linkblue}{HTML}{2A5DB0}
@@ -65,7 +67,9 @@ an autocorrelation-preserving permutation test; a supervised leave-one-video-out
 predicted cortex appears to reach $r=0.47$ but this collapses to a shared temporal-shape artifact
 under a proper position control. Running the same probe on the raw V-JEPA 2 visual features TRIBE
 ingests reveals a small but reliable content-specific signal (matched vs.\ mismatched $p=0.004$)
-that the predicted cortex does \emph{not} carry, locating the loss in the fMRI-encoding step. We
+that the predicted cortex does \emph{not} carry, locating the loss in the fMRI-encoding step. The
+inter-subject-correlation readout---the closest prior positive result at this grain---is
+structurally degenerate here: TRIBE's per-subject predictions are near-identical. We
 bound the claim rather than merely fail to reject it: a Bayes
 factor gives moderate evidence for the null ($\mathrm{BF}_{01}=3.2$), an equivalence test excludes
 effects larger than $r\approx0.14$, and the target's split-half reliability ($\approx0.82$; ceiling
@@ -118,10 +122,14 @@ stated preference, but the relevant results differ in \emph{grain} from ours. Be
 Moore~\citep{berns2012neural} and Genevsky et al.~\citep{genevsky2017brain} are \emph{cross-item}:
 nucleus-accumbens and related reward activity, averaged over a stimulus, predicts which \emph{song}
 or \emph{crowdfunding project} succeeds across the population---not which moment \emph{within} a clip
-is re-watched. Only Dmochowski et al.~\citep{dmochowski2014audience}, via inter-subject correlation
-of the neural time-course, speaks to \emph{within-stimulus} moment-level engagement, and it depends
-on cross-subject reliability rather than mean activation. Our target is within-video and
-moment-level, so the closest prior positive result is the ISC line, not the reward-magnitude line.
+is re-watched. The closest analog for \emph{online content} is the valuation account of information
+virality~\citep{scholz2017virality}, in which ventral-striatal and vmPFC/MPFC activity predicts which
+New York Times articles are shared at scale; this too is cross-item, but it directly motivates the
+signed vmPFC/MPFC readout we test (and find null). Only Dmochowski et
+al.~\citep{dmochowski2014audience}, via inter-subject correlation of the neural time-course, speaks
+to \emph{within-stimulus} moment-level engagement, and it depends on cross-subject reliability rather
+than mean activation. Our target is within-video and moment-level, so the closest prior positive
+result is the ISC line, not the reward-magnitude line.
 A reason to expect transfer to \emph{predicted} signals is that an accurate encoder should reproduce
 whatever behaviorally-relevant structure the response carries; two reasons to doubt it are that the
 reward/salience signal is largely subcortical (Knutson's NAcc) and region-specific, which a
@@ -292,7 +300,7 @@ computed the \emph{signed mean} response in canonical surface ROIs (vmPFC/MPFC, 
 anterior insula). These are null as well: vmPFC $+0.088$, ACC $+0.015$, anterior insula $+0.037$
 (all $95\%$ CIs cross zero, $n{=}48$). Spatially resolving the predicted response, signed or
 unsigned, does not recover a content-level re-watch signal. A caveat of first importance: the
-nucleus accumbens / ventral striatum---the single most important neuroforecasting region---is
+nucleus accumbens / ventral striatum---a primary neuroforecasting locus---is
 subcortical and \emph{absent} from the \texttt{fsaverage5} surface mesh, so this test reaches at
 most its cortical shadow (\S\ref{sec:limits}).
 
@@ -306,10 +314,11 @@ confirming that the near-zero effect is not an artifact of temporal autocorrelat
 
 \subsection{Strength of evidence for the null}\label{sec:equiv}
 A non-significant $p$ is not evidence of absence, so we quantify the evidence directly. A
-two-one-sided-tests (TOST) procedure establishes statistical equivalence to zero within a bound of
-$\delta=0.14$ correlation units (the $90\%$ CI $[-0.02,0.14]$ excludes $|r|>0.14$); equivalence is
-\emph{not} reached at a stricter $\delta=0.10$ ($p=0.20$), so a small effect below $r\approx0.14$
-cannot be excluded. A default JZS Bayes factor for the one-sample test gives
+two-one-sided-tests (TOST) procedure against a pre-specified smallest effect of interest
+$\delta=0.10$ does \emph{not} reach equivalence ($p=0.20$): we cannot rule out a true effect smaller
+than $r\approx0.1$, which is the honest limit of an $n{=}48$ sample. Descriptively, the $90\%$ CI is
+$[-0.02,0.14]$, so effects larger than $r\approx0.14$ are excluded. A default JZS Bayes factor for
+the one-sample test gives
 $\mathrm{BF}_{01}=3.2$: the data are about three times more likely under the null than under a
 diffuse alternative---moderate evidence \emph{for} no effect, not merely a failure to reject.
 This is not a low-ceiling artifact. Estimating the reliability of the most-replayed target by
@@ -326,10 +335,15 @@ $20{,}484$-vertex predicted response is reduced to $100$ principal components (f
 training fold), ridge regression is fit to per-TR most-replayed, and performance is evaluated under
 grouped \textbf{leave-one-video-out} cross-validation (group $=$ video, so no within-video
 leakage), pooling per-video correlations as before. Under a quadratic position control this probe
-appears to succeed spectacularly, reaching pooled CV $r=0.47$. It does not survive scrutiny. A
+appears to succeed spectacularly, reaching pooled CV $r=0.47$. This figure is not comparable to the
+GFP's per-video partial $r=0.058$ and does not imply a signal the GFP missed: a supervised,
+cross-validated readout can learn a temporal shape common to the training videos and apply it to a
+held-out one, which a single fixed per-video curve cannot, so a much larger number is expected even
+under the null. And indeed it does not survive scrutiny. A
 control that ignores the cortex entirely and predicts only the \emph{average} residual
 most-replayed curve of the training videos reaches $r=0.47$ as well, and predicting a held-out
-video's curve from a \emph{different} video's probe output still yields $r=0.32$: the probe is
+video's curve from a \emph{different} video's probe output (its prediction paired with every other
+video's target, averaged) still yields $r=0.32$: the probe is
 reproducing a temporal \emph{shape} shared across videos, not video-specific content. When the
 position control is strengthened from a quadratic to a cubic-spline basis ($7$ df), the probe
 collapses to $r=0.14$ and its predictions are no more correlated with a video's own most-replayed
@@ -350,13 +364,39 @@ CV $r\approx0.12$), but under the spline control their predictions are genuinely
 $p=0.004$), whereas the predicted-cortex probe showed no specificity whatever (matched
 $\approx$ mismatched, $p=0.87$). The visual foundation features thus retain a small but reliable
 content-specific signal aligned with most-replayed that the predicted cortical response does
-\emph{not}. Mapping those features onto a group-trained cortical surface does not preserve the
-modest behaviorally-relevant structure present in the model's own inputs---consistent with the
-concern (\S\ref{sec:related}) that an encoder optimized for average fMRI accuracy regresses out the
-idiosyncratic, moment-to-moment variation a behavioral readout would need. Two caveats bound the
-finding: the feature signal is weak in absolute terms, far below the target's $r\approx0.9$
-reliability ceiling, so this locates \emph{where} a small signal is lost rather than recovering a
-strong one; and we tested only the visual stream.
+\emph{not}. The dissociation must be read off the \emph{mismatched} baselines, not the matched
+ones, and the direction is initially counter-intuitive: the cortex probe's matched correlation
+($0.14$) is in fact slightly \emph{higher} than the feature probe's ($0.13$). What differs is
+mismatched. For the cortex, matched $\approx$ mismatched ($0.14$ vs.\ $0.15$): its entire matched
+performance is a stereotyped shape that fits any video equally, so none of it is video-specific. For
+the features, matched $\gg$ mismatched ($0.13$ vs.\ $0.00$): a probe trained on them fits only the
+correct video. (``Mismatched'' here pairs each held-out video's probe prediction with every
+\emph{other} video's target on a common normalized-time grid, averaged.) That asymmetry is exactly
+the ``regress toward the mean'' concern of \S\ref{sec:related} made visible: a group-trained encoder
+collapses idiosyncratic responses toward a shared mean shape, so the predicted cortex retains the
+shape but not the video-specific structure the features still carry. Mapping the features onto that
+surface does not preserve the modest behaviorally-relevant signal present in the model's own inputs.
+Two caveats bound the finding: the feature signal is weak in absolute terms, far below the target's
+$r\approx0.9$ reliability ceiling, so this locates \emph{where} a small signal is lost rather than
+recovering a strong one; and we tested only the visual stream.
+
+\subsection{The inter-subject-correlation route is structurally closed}\label{sec:isc}
+The one prior positive result at our grain---inter-subject correlation (ISC) of the neural
+time-course (\S\ref{sec:related})---requires \emph{per-subject} responses, which every analysis
+above obtains only after averaging over TRIBE's subject embeddings. TRIBE does carry subject
+embeddings ($4$ subjects for the Algonauts-2025 study), so rather than concede the point we test the
+ISC route directly: we generate per-subject predictions for all four subjects on all $48$ videos,
+form a per-TR ISC curve as the sliding-window mean pairwise correlation of the four predicted GFP
+time-courses, and run the same position-controlled analysis. The readout is \emph{degenerate}.
+Across subjects the predicted GFP time-courses are near-identical (mean pairwise correlation
+$\approx 1.0$): TRIBE's additive subject embedding induces negligible inter-subject variability in
+the predicted response, so the ISC curve is essentially constant and its partial correlation with
+most-replayed is null and uninformative ($r=-0.01$, $p=0.67$). The substantive point is structural,
+not statistical: a group-trained encoder whose only subject-specific parameter is a small additive
+embedding cannot \emph{express} the inter-subject-reliability signal the ISC line depends on. The
+ISC route is thus closed not because we did not try it, but because this class of predicted-fMRI
+model produces no meaningful cross-subject divergence to correlate---itself a concrete limit on
+using such models for ISC-style neuroforecasting.
 
 \subsection{No duration or resolution confound}\label{sec:confound}
 Because most-replayed's $100$ markers span the full clip, a short video contributes many in-window
@@ -409,17 +449,18 @@ the effect is exactly zero.
 
 \section{Limitations}\label{sec:limits}
 Several limitations bound the scope, and two are load-bearing. First, \texttt{fsaverage5} is a
-\emph{cortical-surface} mesh: the nucleus accumbens / ventral striatum, the primary neuroforecasting
+\emph{cortical-surface} mesh: the nucleus accumbens / ventral striatum, a primary neuroforecasting
 locus, is subcortical and simply absent, so TRIBE-on-\texttt{fsaverage5} structurally cannot
-represent the canonical reward signal and we test at most its cortical shadow. A subcortex-inclusive
+represent the canonical ventral-striatal reward signal and we test at most its cortical shadow. A subcortex-inclusive
 encoder is the natural follow-up. Second, most-replayed is a biased behavioral target (onset/intro
 effects, chapter markers, seek-back), and although we control position aggressively and confirm the
 target is reliable, a cleaner signal such as creator-side audience-retention would be preferable.
 Further: we analyze a $60$\,s window; our videos are all already popular (they require a heatmap),
-a range restriction that weakens the video-level ranking test; we average over TRIBE's subject
-embeddings, which discards exactly the inter-subject-reliability signal that one line of
-neuroforecasting depends on; and $N=48$ with an imbalanced category mix is modest, though our
-pipeline makes scaling to hundreds of videos cheap.
+a range restriction that weakens the video-level ranking test; the inter-subject-correlation route
+is inaccessible here (\S\ref{sec:isc})---not because we average subjects but because TRIBE's
+per-subject predictions barely differ, a structural limit of the encoder rather than of our
+analysis; and $N=48$ with an imbalanced category mix is modest, though our pipeline makes scaling to
+hundreds of videos cheap.
 
 \section*{Ethics and Broader Impact}
 A reliable predictor of moment-level engagement from brain-derived signals would have clear
@@ -477,6 +518,9 @@ F.~E.~Theunissen, and J.~L.~Gallant. Natural speech reveals the semantic maps th
 cerebral cortex. \emph{Nature}, 532(7600):453--458, 2016.
 \bibitem[Naselaris et al.(2011)]{naselaris2011encoding} T.~Naselaris, K.~N.~Kay, S.~Nishimoto, and
 J.~L.~Gallant. Encoding and decoding in fMRI. \emph{NeuroImage}, 56(2):400--410, 2011.
+\bibitem[Scholz et al.(2017)]{scholz2017virality} C.~Scholz, E.~C.~Baek, M.~B.~O'Donnell,
+H.~S.~Kim, J.~N.~Cappella, and E.~B.~Falk. A neural model of valuation and information virality.
+\emph{Proceedings of the National Academy of Sciences}, 114(11):2881--2886, 2017.
 \end{thebibliography}
 
 \end{document}

@@ -1,0 +1,12 @@
+{
+  "n_videos": 48,
+  "isc_vs_most_replayed_partial_r": -0.0087,
+  "ci95": [
+    -0.0492,
+    0.0318
+  ],
+  "t": -0.432,
+  "p_two": 0.6676,
+  "mean_static_across_subject_gfp_corr": 1.0,
+  "note": "predicted subjects differ only by learned embedding; static corr near 1 => degenerate ISC"
+}
