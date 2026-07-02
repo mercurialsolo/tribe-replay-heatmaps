@@ -17,7 +17,7 @@ def make():
     cache_vol.reload()
     w1 = json.load(open("/cache/wave1_results.json"))
     e4 = json.load(open("/cache/e4_control.json"))
-    e5 = json.load(open("/cache/e5_feature_probe.json")) if os.path.exists("/cache/e5_feature_probe.json") else None
+    mod = json.load(open("/cache/modality_probe.json")) if os.path.exists("/cache/modality_probe.json") else None
     e1 = w1["E1_equivalence_bayes"]; roi = w1["E3_signed_roi"]
 
     plt.rcParams.update({"font.size": 9, "axes.spines.top": False, "axes.spines.right": False})
@@ -48,20 +48,20 @@ def make():
     ax[1].set_xlabel("pooled partial $r$"); ax[1].set_title("(b) All readouts null\n(* = signed ROI)")
     ax[1].set_xlim(-0.15, 0.15); ax[1].tick_params(axis="y", pad=1)
 
-    # (c) supervised probe collapse
-    groups = ["quad\nprobe", "generic\nshape", "spline\nprobe", "spline\nmismatch"]
-    cortex = [e4["quad"]["probe_pooled_r"], e4["quad"]["generic_mean_shape_baseline_r"],
-              e4["spline"]["probe_pooled_r"], e4["spline"]["mismatched_grid_r"]]
-    x = np.arange(len(groups)); ww = 0.38
-    ax[2].bar(x - (ww/2 if e5 else 0), cortex, ww if e5 else 0.6, label="cortex", color="#C44E52")
-    if e5:
-        feat = [e5["quad"]["probe_pooled_r"], e5["quad"]["generic_mean_shape_baseline_r"],
-                e5["spline"]["probe_pooled_r"], e5["spline"]["mismatched_grid_r"]]
-        ax[2].bar(x + ww/2, feat, ww, label="V-JEPA2 feats", color="#8172B3")
-        ax[2].legend(fontsize=6, frameon=False)
+    # (c) spline matched vs mismatched, per source: only visual shows a (borderline) gap
+    src = [("cortex", e4["spline"]), ("video", mod["video"]["spline"]),
+           ("audio", mod["audio"]["spline"]), ("text", mod["text"]["spline"])] if mod \
+        else [("cortex", e4["spline"])]
+    labels = [s[0] for s in src]
+    matched = [s[1]["matched_grid_r"] for s in src]
+    mismatched = [s[1]["mismatched_grid_r"] for s in src]
+    x = np.arange(len(labels)); ww = 0.38
+    ax[2].bar(x - ww / 2, matched, ww, label="matched", color="#4C72B0")
+    ax[2].bar(x + ww / 2, mismatched, ww, label="mismatched", color="#C44E52")
     ax[2].axhline(0, color="0.6", lw=.8)
-    ax[2].set_xticks(x); ax[2].set_xticklabels(groups, fontsize=6)
-    ax[2].set_ylabel("pooled CV $r$"); ax[2].set_title("(c) Probe $r$=0.47 is an artifact\n(collapses under spline)")
+    ax[2].set_xticks(x); ax[2].set_xticklabels(labels, fontsize=7)
+    ax[2].set_ylabel("spline CV $r$"); ax[2].legend(fontsize=6, frameon=False)
+    ax[2].set_title("(c) Only visual is video-specific\n(matched$>$mismatched, borderline)")
 
     # (d) noise ceiling
     ceil = w1["E7_noise_ceiling"]["implied_ceiling_r"]
@@ -76,7 +76,7 @@ def make():
     fig.savefig("/cache/figure2.pdf", bbox_inches="tight")
     fig.savefig("/cache/figure2.png", dpi=160, bbox_inches="tight")
     cache_vol.commit()
-    return {"e5_included": e5 is not None, "ceiling": ceil}
+    return {"modality_included": mod is not None, "ceiling": ceil}
 
 
 @app.local_entrypoint()

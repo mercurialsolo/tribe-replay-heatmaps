@@ -66,9 +66,10 @@ videos reflect a genre-specific intro/onset-replay artifact rather than content 
 not generalize. The null holds across six cortical-network readouts, signed value/salience ROIs, and
 an autocorrelation-preserving permutation test; a supervised leave-one-video-out probe on the
 predicted cortex appears to reach $r=0.47$ but this collapses to a shared temporal-shape artifact
-under a proper position control. Running the same probe on the raw V-JEPA 2 visual features TRIBE
-ingests reveals a small but reliable content-specific signal (matched vs.\ mismatched $p=0.004$)
-that the predicted cortex does \emph{not} carry, locating the loss in the fMRI-encoding step. The
+under a proper position control. Running the same probe on TRIBE's three input streams reveals at
+most a small, borderline content-specific signal in the visual stream (matched vs.\ mismatched
+$p\approx0.004$--$0.06$ across feature extractions) and none in audio, text, or the predicted cortex,
+tentatively locating what little signal exists in the visual input rather than the encoding. The
 inter-subject-correlation readout, the closest prior positive result at this grain, is unavailable:
 the released TRIBE checkpoint is subject-averaged and carries no per-subject parameters, so it cannot
 produce the per-subject responses ISC requires. We
@@ -355,35 +356,37 @@ re-watch signal; the apparent success is the intro/onset-shape artifact operatin
 temporal order. This is a concrete caution for using most-replayed as a training label: a coarse
 detrend manufactures a large, cross-validated, entirely spurious correlation.
 
-\subsection{Where the signal is lost: features vs.\ predicted cortex}\label{sec:features}
+\subsection{Where the signal is lost: input features vs.\ predicted cortex}\label{sec:features}
 The cortical probe's failure poses a mechanistic question: is a content-specific signal simply
 absent from the stimulus, or present in the model's inputs but discarded by the fMRI-encoding step?
-We run the identical probe, same spline position control, same matched/mismatched test, on the raw
-\textbf{V-JEPA 2} visual features TRIBE ingests (per-TR embeddings, $d{=}1024$). The features behave
-\emph{differently} from the predicted cortex. Their absolute predictive power is still low (pooled
-CV $r\approx0.12$), but under the spline control their predictions are genuinely
-\emph{video-specific}: matched-target correlation $0.13$ versus mismatched $0.00$ (paired
-$p=0.004$), whereas the predicted-cortex probe showed no specificity whatever (matched
-$\approx$ mismatched, $p=0.87$). The visual foundation features thus retain a small but reliable
-content-specific signal aligned with most-replayed that the predicted cortical response does
-\emph{not}. The dissociation must be read off the \emph{mismatched} baselines, not the matched
-ones, and the direction is initially counter-intuitive: the cortex probe's matched correlation
-($0.14$) is in fact slightly \emph{higher} than the feature probe's ($0.13$). What differs is
-mismatched. For the cortex, matched $\approx$ mismatched ($0.14$ vs.\ $0.15$): its entire matched
-performance is a stereotyped shape that fits any video equally, so none of it is video-specific. For
-the features, matched $\gg$ mismatched ($0.13$ vs.\ $0.00$): a probe trained on them fits only the
-correct video. Matched and mismatched are computed through an identical pipeline, differing only in
-the pairing: each held-out video's probe prediction is resampled to a common $50$-point
-normalized-time grid and correlated either with its \emph{own} target on that grid (matched) or,
-averaged, with every \emph{other} video's target on the same grid (mismatched), so the $0.13$-vs-$0$
-gap cannot be a grid or normalization artifact. That asymmetry is exactly
-the ``regress toward the mean'' concern of \S\ref{sec:related} made visible: a group-trained encoder
-collapses idiosyncratic responses toward a shared mean shape, so the predicted cortex retains the
-shape but not the video-specific structure the features still carry. Mapping the features onto that
-surface does not preserve the modest behaviorally-relevant signal present in the model's own inputs.
-Two caveats bound the finding: the feature signal is weak in absolute terms, far below the target's
-$r\approx0.9$ reliability ceiling, so this locates \emph{where} a small signal is lost rather than
-recovering a strong one; and we tested only the visual stream.
+We run the identical probe, same spline position control and matched/mismatched test, on each of
+TRIBE's three input streams, captured in-model at the modality projectors: V-JEPA 2 video,
+Wav2Vec-BERT audio, and Llama text. The streams differ. Only the \textbf{visual} stream shows any
+video-specificity, and only weakly: matched-target correlation $0.12$ versus mismatched $0.05$
+(paired $p=0.06$). The audio (matched $-0.01$ vs.\ mismatched $0.02$, $p=0.43$) and text (matched
+$0.00$ vs.\ mismatched $0.02$, $p=0.74$) streams show none, behaving like the predicted cortex
+(matched $0.14 \approx$ mismatched $0.15$, $p=0.87$). Whatever content-specific signal exists lives
+in the visual input alone; audio and text carry nothing for the encoding step to lose.
+
+This visual signal is small and borderline, and we are deliberately cautious about it. With a
+separately extracted V-JEPA 2 representation (a different checkpoint and denser temporal sampling)
+the same visual probe reaches matched $0.13$ vs.\ mismatched $0.00$ ($p=0.004$); across the two
+extractions the effect sits at $p\approx0.004$--$0.06$. We therefore treat it as \emph{suggestive}
+rather than established: a hint of video-specific structure in the visual features that the predicted
+cortex does not carry. Even so, the comparison must be read off the \emph{mismatched} baselines, not
+the matched ones. The cortex probe's matched correlation ($0.14$) is in fact slightly \emph{higher}
+than the visual probe's ($0.12$); what differs is mismatched, where the cortex ($0.15$) matches any
+video equally while the visual features ($0.05$) fit mainly the correct one. Matched and mismatched
+run through an identical pipeline, differing only in the pairing: each held-out video's prediction is
+resampled to a common $50$-point normalized-time grid and correlated with its \emph{own} target
+(matched) or, averaged, with every \emph{other} video's target on the same grid (mismatched), so the
+gap cannot be a grid or normalization artifact. To the extent the effect is real, it is the ``regress
+toward the mean'' tendency of \S\ref{sec:related} made visible: a group-trained encoder collapses
+idiosyncratic responses toward a shared mean, so the predicted cortex keeps the shape but not the
+faint video-specific structure the visual features carry. The finding is modest by construction: the
+signal is weak (pooled CV $r\approx0.12$, far below the target's $r\approx0.9$ ceiling) and confined
+to one of three streams, so it locates \emph{where} a small signal would be lost rather than
+recovering a strong one.
 
 \subsection{The inter-subject-correlation route is unavailable in the released model}\label{sec:isc}
 The one prior positive result at our grain, inter-subject correlation (ISC) of the neural
@@ -416,11 +419,11 @@ markers; the $29\%$ with fewer than $10$ have coarser targets but do not drive t
 $\delta{=}0.14$; a Bayes factor gives $\mathrm{BF}_{01}{=}3.2$ (moderate evidence for the null).
 (b)~Every readout is near zero: whole-cortex GFP, five functional networks, and signed
 value/salience ROIs ($*$).
-(c)~The supervised probe's apparent $r{=}0.47$ on the predicted cortex equals a cortex-free
-mean-shape baseline and collapses under a proper spline position control (matched $\approx$
-mismatched); on the raw V-JEPA 2 features the same probe is weaker in level but genuinely
-video-specific (matched $\gg$ mismatched), so the content signal is present in the inputs and lost
-in the predicted cortex.
+(c)~Under the spline position control, matched vs.\ mismatched CV correlation by source: only
+TRIBE's visual input stream shows any video-specificity (matched $>$ mismatched, borderline
+$p{=}0.06$); the audio and text streams and the predicted cortex show none (matched $\approx$
+mismatched). The apparent $r{=}0.47$ of the cortex probe under a coarse quadratic control (not shown)
+is a shared-shape artifact that collapses here.
 (d)~The target is reliable (split-half ceiling $r\approx0.9$), so the near-zero result is not label
 noise.}
 \label{fig:evidence}
@@ -435,13 +438,14 @@ control and a matched-versus-mismatched test. The recurring lesson is methodolog
 carries a dominant, genre- and position-linked temporal shape, and any analysis that does not
 aggressively remove it (raw correlation, a coarse detrend, or a cross-validated probe on top of a
 coarse detrend) will report a spurious signal. This is a direct caution for the growing practice of
-repurposing brain-encoding models as off-the-shelf engagement predictors. The dissociation between
-the visual features and the predicted cortex sharpens the point: a small content-specific signal
-does exist in TRIBE's inputs, but the fMRI-encoding step, the very thing that makes these models
-scientifically interesting, is where it is lost, not the readout or the target. Our two mechanistic
-observations are in fact one phenomenon seen twice. A group-trained encoder collapses idiosyncratic
-structure toward a shared mean: across videos, so the video-specific signal in the features survives
-in neither the predicted cortex nor the shared temporal shape the probe latches onto
+repurposing brain-encoding models as off-the-shelf engagement predictors. The faint dissociation
+between the visual input and the predicted cortex points the same way: what little content-specific
+signal appears anywhere (a borderline effect in the visual stream, nothing in audio, text, or the
+predicted cortex) is not carried by the encoded response, consistent with the loss being at the
+fMRI-encoding step rather than the readout or the target. Our two mechanistic observations then read
+as one phenomenon seen twice. A group-trained encoder collapses idiosyncratic structure toward a
+shared mean: across videos, so the weak video-specific structure in the visual features survives in
+neither the predicted cortex nor the shared temporal shape the probe latches onto
 (\S\ref{sec:features}); and across subjects, so completely that the released checkpoint carries no
 per-subject parameters and cannot express inter-subject differences at all (\S\ref{sec:isc}). The
 same averaging that makes these models accurate predictors of the \emph{typical} cortical response
@@ -484,8 +488,9 @@ For this target and these readouts, a predicted-fMRI drive signal from TRIBE doe
 YouTube re-watch behavior beyond temporal position and low-level features, and the null is backed
 by an equivalence bound, a Bayes factor, a target reliability ceiling, and the failure of a
 supervised readout that a naive detrend made look successful. Yet the story is not simply ``no
-signal anywhere'': the raw visual features carry a small content-specific signal that the
-fMRI-encoding step does not preserve, so the loss is localized to the brain-mapping stage. The scope
+signal anywhere'': a small, borderline content-specific signal appears in the visual input stream
+(but not audio, text, or the predicted cortex), tentatively placing what little signal exists before
+the brain-mapping stage rather than after it. The scope
 is deliberately narrow: a
 single model, a cortical-surface readout that excludes subcortical reward regions, a biased target,
 and a $60$\,s window. Whether a subcortex-inclusive encoder, a per-subject reliability readout, or a

@@ -1,0 +1,56 @@
+{
+  "video": {
+    "n_videos": 48,
+    "feat_dim": 2816,
+    "quad": {
+      "probe_pooled_r": 0.2879,
+      "matched_grid_r": 0.3048,
+      "mismatched_grid_r": 0.2825,
+      "paired_p": 0.6818,
+      "n": 48
+    },
+    "spline": {
+      "probe_pooled_r": 0.1158,
+      "matched_grid_r": 0.1246,
+      "mismatched_grid_r": 0.0453,
+      "paired_p": 0.0587,
+      "n": 48
+    }
+  },
+  "audio": {
+    "n_videos": 48,
+    "feat_dim": 2048,
+    "quad": {
+      "probe_pooled_r": 0.2665,
+      "matched_grid_r": 0.3002,
+      "mismatched_grid_r": 0.3253,
+      "paired_p": 0.6274,
+      "n": 48
+    },
+    "spline": {
+      "probe_pooled_r": -0.001,
+      "matched_grid_r": -0.0059,
+      "mismatched_grid_r": 0.0208,
+      "paired_p": 0.4289,
+      "n": 48
+    }
+  },
+  "text": {
+    "n_videos": 48,
+    "feat_dim": 6144,
+    "quad": {
+      "probe_pooled_r": 0.0043,
+      "matched_grid_r": 0.0099,
+      "mismatched_grid_r": 0.0638,
+      "paired_p": 0.0829,
+      "n": 48
+    },
+    "spline": {
+      "probe_pooled_r": -0.0132,
+      "matched_grid_r": 0.0029,
+      "mismatched_grid_r": 0.0159,
+      "paired_p": 0.7431,
+      "n": 48
+    }
+  }
+}
