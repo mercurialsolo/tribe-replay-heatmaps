@@ -1,0 +1,69 @@
+{
+  "E1_equivalence_bayes": {
+    "n": 48,
+    "mean": 0.0584,
+    "sd": 0.3335,
+    "se": 0.0481,
+    "t": 1.213,
+    "p_two": 0.2312,
+    "ci95": [
+      -0.0384,
+      0.1551
+    ],
+    "tost_p_delta_0p10": 0.1959,
+    "tost_equivalent_at_0p10": false,
+    "smallest_equiv_delta": 0.139,
+    "BF10": 0.312,
+    "BF01": 3.204
+  },
+  "E7_noise_ceiling": {
+    "target_reliability_mean": 0.0,
+    "target_reliability_median": 0.822,
+    "implied_ceiling_r": 0.0,
+    "n": 45
+  },
+  "E2_marker_confound": {
+    "n_in_window_median": 20,
+    "n_in_window_min": 1,
+    "n_in_window_max": 98,
+    "frac_videos_lt10_markers": 0.292,
+    "corr_rawr_vs_markerdensity": -0.077,
+    "corr_rawr_vs_duration": 0.065,
+    "corr_partialr_vs_markerdensity": 0.118
+  },
+  "E3_signed_roi": {
+    "vmPFC/MPFC (signed)": {
+      "pooled_partial_r": 0.0884,
+      "ci95": 0.1011,
+      "n": 48,
+      "n_vertices": 398
+    },
+    "ACC (signed)": {
+      "pooled_partial_r": 0.0148,
+      "ci95": 0.0949,
+      "n": 48,
+      "n_vertices": 617
+    },
+    "anterior insula (signed)": {
+      "pooled_partial_r": 0.0365,
+      "ci95": 0.0936,
+      "n": 48,
+      "n_vertices": 214
+    },
+    "whole-cortex (signed mean)": {
+      "pooled_partial_r": 0.0197,
+      "ci95": 0.0986,
+      "n": 48,
+      "n_vertices": 20484
+    }
+  },
+  "E4_supervised_cortical_probe": {
+    "pooled_cv_r": 0.4654,
+    "ci95": 0.1107,
+    "frac_positive": 0.875,
+    "n": 48,
+    "note": "grouped leave-one-video-out; position-residualized; PCA(<=100) fit within train fold"
+  },
+  "gfp_pooled_partial_r": 0.0584,
+  "raw_pooled_r": 0.0302
+}

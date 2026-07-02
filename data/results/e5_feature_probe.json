@@ -1,0 +1,24 @@
+{
+  "n_videos": 48,
+  "feat_dim": 1024,
+  "quad": {
+    "probe_pooled_r": 0.1066,
+    "probe_frac_pos": 0.688,
+    "matched_grid_r": 0.117,
+    "mismatched_grid_r": 0.0482,
+    "matched_minus_mismatched": 0.0688,
+    "paired_p": 0.0845,
+    "generic_mean_shape_baseline_r": 0.4637,
+    "n": 48
+  },
+  "spline": {
+    "probe_pooled_r": 0.1186,
+    "probe_frac_pos": 0.604,
+    "matched_grid_r": 0.1272,
+    "mismatched_grid_r": 0.0016,
+    "matched_minus_mismatched": 0.1256,
+    "paired_p": 0.0038,
+    "generic_mean_shape_baseline_r": 0.3024,
+    "n": 48
+  }
+}

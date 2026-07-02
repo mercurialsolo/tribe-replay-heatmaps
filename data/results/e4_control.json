@@ -1,0 +1,24 @@
+{
+  "quad": {
+    "probe_pooled_r": 0.4654,
+    "probe_frac_pos": 0.875,
+    "matched_grid_r": 0.4784,
+    "mismatched_grid_r": 0.324,
+    "matched_minus_mismatched": 0.1544,
+    "paired_t_matched_vs_mismatched": 2.653,
+    "paired_p": 0.0109,
+    "generic_mean_shape_baseline_r": 0.4733,
+    "n": 48
+  },
+  "spline": {
+    "probe_pooled_r": 0.1375,
+    "probe_frac_pos": 0.604,
+    "matched_grid_r": 0.1422,
+    "mismatched_grid_r": 0.1519,
+    "matched_minus_mismatched": -0.0097,
+    "paired_t_matched_vs_mismatched": -0.167,
+    "paired_p": 0.8678,
+    "generic_mean_shape_baseline_r": 0.28,
+    "n": 48
+  }
+}
