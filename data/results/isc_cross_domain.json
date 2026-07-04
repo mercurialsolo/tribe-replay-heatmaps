@@ -1,0 +1,56 @@
+{
+  "n_friends": 35,
+  "n_movie10": 14,
+  "per_subject_cross_domain": {
+    "sub-01": {
+      "friends_to_film_encoding_r": 0.1041,
+      "per_film": [
+        0.099,
+        0.089,
+        0.108,
+        0.131,
+        0.106,
+        0.124,
+        0.088,
+        0.12,
+        0.073,
+        0.078,
+        0.136,
+        0.109,
+        0.109,
+        0.088
+      ],
+      "n_films": 14
+    },
+    "sub-02": {
+      "friends_to_film_encoding_r": null,
+      "per_film": [],
+      "n_films": 0
+    },
+    "sub-03": {
+      "friends_to_film_encoding_r": 0.109,
+      "per_film": [
+        0.091,
+        0.124,
+        0.127,
+        0.103,
+        0.096,
+        0.128,
+        0.1,
+        0.115,
+        0.098,
+        0.074,
+        0.141,
+        0.112,
+        0.127,
+        0.093
+      ],
+      "n_films": 14
+    },
+    "sub-05": {
+      "friends_to_film_encoding_r": null,
+      "per_film": [],
+      "n_films": 0
+    }
+  }
+}

@@ -69,9 +69,10 @@ under a proper position control. Running the same probe on TRIBE's three input s
 most a small, borderline content-specific signal in the visual stream (matched vs.\ mismatched
 $p\approx0.004$--$0.06$ across feature extractions) and none in audio, text, or the predicted cortex,
 tentatively placing what little signal exists in the visual input, upstream of the encoding. The
-inter-subject-correlation readout, the closest prior positive result at this grain, is unavailable:
-the released TRIBE checkpoint is subject-averaged and carries no per-subject parameters, so it cannot
-produce the per-subject responses ISC requires. We
+inter-subject-correlation (ISC) readout, the closest prior positive result at this grain, is
+unavailable from the subject-averaged released model, so we fit our own per-subject encoders on
+the Algonauts fMRI (validated in-domain at $r\approx0.15$ and cross-domain, Friends$\to$film, at
+$r\approx0.10$); the predicted ISC still does not track re-watch ($r=-0.04$, $p=0.34$). We
 bound the claim rather than merely fail to reject it: a Bayes
 factor gives moderate evidence for the null ($\mathrm{BF}_{01}=3.2$), an equivalence test excludes
 effects larger than $r\approx0.14$, and the target's split-half reliability ($\approx0.82$; ceiling
@@ -110,6 +111,18 @@ yet this is entirely a shared temporal-shape artifact that vanishes under a stro
 control, a warning for anyone using most-replayed as a label. It also meant obtaining the videos at all, which
 YouTube's SABR streaming places beyond standard download tools. The code, the video-ID manifest, and
 the acquisition pipeline are released.
+
+The result is not only a null but an account of \emph{why} the transfer fails, which we take to be
+the paper's main contribution. A group-trained encoder collapses idiosyncratic structure toward a
+shared mean, and we see this same collapse from two directions: across videos, the weak
+content-specific signal present in the visual inputs is absent from the predicted cortex
+(\S\ref{sec:features}); and across subjects, per-subject predictions built to test the
+inter-subject-reliability route, the closest prior positive result, carry no re-watch signal either
+(\S\ref{sec:isc}). The averaging that makes these models accurate predictors of the \emph{typical}
+response is what removes the variation a behavioral signal would ride on. Alongside this mechanism we
+contribute a concrete methodological caution, the manufactured $r=0.47$ above, and a bounded rather
+than merely unrejected null. We frame the work for practitioners tempted to use brain-encoding
+models, or the foundation features behind them, as off-the-shelf engagement predictors.
 
 \section{Related Work}\label{sec:related}
 \paragraph{Brain encoding of naturalistic stimuli.} Voxel-wise and surface-based encoding models
@@ -321,7 +334,11 @@ than $r\approx0.1$, the limit of resolution at $n{=}48$. Descriptively, the $90\
 $[-0.02,0.14]$, so effects larger than $r\approx0.14$ are excluded. A default JZS Bayes factor for
 the one-sample test gives
 $\mathrm{BF}_{01}=3.2$: the data are about three times more likely under the null than under a
-diffuse alternative, which is positive evidence \emph{for} no effect.
+diffuse alternative, which is positive evidence \emph{for} no effect. A random-effects
+meta-analysis (DerSimonian--Laird over per-video Fisher-$z$) leaves the estimate unchanged
+($r=0.058$) and, because between-video heterogeneity is high ($I^2=87\%$), does not narrow the
+interval; this locates the limiting factor squarely at the sample size rather than the pooling
+method, and motivates the larger, balanced sample we flag as the natural next step.
 This is not a low-ceiling artifact. Estimating the reliability of the most-replayed target by
 split-half correlation of its $100$ markers (odd vs.\ even, Spearman--Brown corrected) gives a
 median reliability of $0.82$, so even a perfect predictor is bounded near $r\approx0.9$; the target
@@ -385,20 +402,37 @@ signal is weak (pooled CV $r\approx0.12$, far below the target's $r\approx0.9$ c
 to one of three streams, so it locates \emph{where} a small signal would be lost rather than
 recovering a strong one.
 
-\subsection{The inter-subject-correlation route is unavailable in the released model}\label{sec:isc}
+\subsection{Testing the inter-subject-correlation route directly}\label{sec:isc}
 The one prior positive result at our grain, inter-subject correlation (ISC) of the neural
-time-course (\S\ref{sec:related}), requires \emph{per-subject} responses. We attempted to compute it
-and found the released model cannot supply them. The public \texttt{facebook/tribev2} checkpoint was
-trained with subject averaging (\texttt{average\_subjects}\,=\,True); on inspection it contains
-\emph{no} subject-specific parameters at all: there is no subject-embedding layer, the subject-layer
-\texttt{n\_subjects} is $0$, and the subject mapping is empty. \texttt{predict} returns a single
-subject-averaged response, and setting the subject identifier at inference has no effect: the
-predictions for the four Algonauts subjects come out bit-identical (maximum absolute difference
-$0$). A predicted-ISC readout is therefore not merely weak but \emph{undefined} for the released
-model, since the per-subject responses ISC operates on do not exist; testing it would require a
-checkpoint trained with per-subject layers, which is not publicly available. This is itself
-informative: subject averaging, a reasonable choice for maximizing fMRI-prediction accuracy, removes
-by construction the very inter-subject structure the behavioral (ISC) result depends on.
+time-course (\S\ref{sec:related}), requires \emph{per-subject} responses. The released
+\texttt{facebook/tribev2} checkpoint cannot supply them: it was trained with subject averaging
+(\texttt{average\_subjects}\,=\,True) and contains no subject-specific parameters (no
+subject-embedding layer, subject-layer \texttt{n\_subjects}\,$=$\,$0$, empty subject mapping), so its
+predictions for the four Algonauts subjects are bit-identical. Rather than concede the route, we
+build the per-subject responses ourselves and test ISC end-to-end.
+
+\paragraph{Per-subject encoders.} Using the public Algonauts~2025 / CNeuroMod fMRI (four subjects
+watching Friends, cortical Schaefer-1000 parcels, TR${=}1.49$\,s), we fit a ridge encoder per subject
+that maps foundation features (V-JEPA~2, optionally with Wav2Vec-BERT audio) plus hemodynamic delays
+onto the $1{,}000$ parcels. Under leave-one-episode-out cross-validation these encoders predict
+held-out fMRI at a mean parcel correlation of $r\approx0.15$, in the published range for
+feature-to-cortex encoders. They also \emph{generalize across video domains}: an encoder trained only
+on Friends (situation comedy) predicts held-out fMRI for feature films (\emph{Bourne}, \emph{Wolf of
+Wall Street}) at $r\approx0.10$, nearly the in-domain level, which is direct evidence that the
+encoders transfer to unseen naturalistic video rather than memorizing one genre.
+
+\paragraph{Predicted ISC does not track re-watch.} We apply the four per-subject encoders to each
+re-watch video's features, obtaining four predicted cortical responses per video; the per-TR
+predicted ISC is the mean pairwise across-subject correlation of the predicted parcel patterns. Under
+the same position-controlled protocol, this predicted-ISC curve does not predict most-replayed:
+pooled partial $r=-0.04$ (video features; $p=0.34$, $n=48$) and $r=-0.03$ (video${+}$audio;
+$p=0.48$). The null holds across both feature sets and all four subjects, with encoders that are
+validated in-domain and cross-domain. Even the closest prior positive result to our target, computed
+with genuine per-subject predictions rather than the subject-averaged model, provides no
+content-level prediction of what viewers re-watch. (We omit TRIBE's text stream from these encoders:
+it is the null modality of \S\ref{sec:features} and, via word-level language-model features, by far
+the most expensive to extract; a full three-stream encoder is left to future work but is not expected
+to change a null that already holds for the informative streams.)
 
 \subsection{No duration or resolution confound}\label{sec:confound}
 Because most-replayed's $100$ markers span the full clip, a short video contributes many in-window
@@ -461,16 +495,17 @@ we do not claim the effect is exactly zero.
 Several limitations bound the scope, and two matter most. First, \texttt{fsaverage5} is a
 \emph{cortical-surface} mesh: the nucleus accumbens / ventral striatum, a primary neuroforecasting
 locus, is subcortical and simply absent, so TRIBE-on-\texttt{fsaverage5} structurally cannot
-represent the canonical ventral-striatal reward signal and we test at most its cortical shadow. A subcortex-inclusive
-encoder is the natural follow-up. Second, most-replayed is a biased behavioral target (onset/intro
+represent the canonical ventral-striatal reward signal and we test at most its cortical shadow. The
+natural follow-up is a subcortical-ROI encoder fit on the volumetric CNeuroMod BOLD (which includes
+the nucleus accumbens); that data is under registered access, so we leave it as immediate future
+work with the encoder pipeline in place. Second, most-replayed is a biased behavioral target (onset/intro
 effects, chapter markers, seek-back), and although we control position aggressively and confirm the
 target is reliable, a cleaner signal such as creator-side audience-retention would be preferable.
 Further: we analyze a $60$\,s window; our videos are all already popular (they require a heatmap),
-a range restriction that weakens the video-level ranking test; the inter-subject-correlation route
-is inaccessible here (\S\ref{sec:isc}) because the released checkpoint is subject-averaged and
-contains no per-subject parameters, a property of the released model rather than of our analysis;
-and $N=48$ with an imbalanced category mix is modest, though our pipeline makes scaling to hundreds
-of videos cheap.
+a range restriction that weakens the video-level ranking test; our ISC test (\S\ref{sec:isc}) uses
+per-subject encoders we fit rather than TRIBE's own per-subject head (which the released model lacks),
+and covers the four Algonauts subjects; and $N=48$ with an imbalanced category mix is modest, though
+our pipeline makes scaling to hundreds of videos cheap.
 
 \section*{Ethics and Broader Impact}
 A reliable predictor of moment-level engagement from brain-derived signals would have clear

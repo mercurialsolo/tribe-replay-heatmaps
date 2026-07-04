@@ -1,0 +1,19 @@
+{
+  "n_subject_encoders": 4,
+  "n_train_episodes": 35,
+  "encoder_subjects": [
+    "sub-01",
+    "sub-02",
+    "sub-03",
+    "sub-05"
+  ],
+  "n_videos": 48,
+  "isc_vs_mostreplayed_partial_r": -0.038,
+  "ci95": [
+    -0.1172,
+    0.0411
+  ],
+  "t": -0.966,
+  "p_two": 0.3392,
+  "raw_pooled_r": -0.026
+}

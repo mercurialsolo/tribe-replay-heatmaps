@@ -1,0 +1,31 @@
+{
+  "unweighted_mean_r": 0.0583,
+  "DerSimonian_Laird": {
+    "method": "DerSimonian-Laird random-effects (Fisher-z)",
+    "pooled_r": 0.0577,
+    "ci95_r": [
+      -0.0477,
+      0.1618
+    ],
+    "ci90_r": [
+      -0.0308,
+      0.1453
+    ],
+    "tau2": 0.1214,
+    "I2": 87.3,
+    "tost_p_delta0p10": 0.2146,
+    "tost_equiv_at_0p10": false,
+    "smallest_equiv_delta_r": 0.145,
+    "n": 48
+  },
+  "mixed_model_category_RE": {
+    "pooled_r": 0.0565,
+    "ci95_r": [
+      -0.0725,
+      0.1836
+    ],
+    "group_var": 0.0004,
+    "n_categories": 11
+  },
+  "n_videos": 48
+}
