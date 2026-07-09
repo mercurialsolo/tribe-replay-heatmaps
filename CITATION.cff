@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this code, the video-ID manifest, or the finding, please cite the paper below."
+title: "A global predicted-fMRI drive signal from TRIBE does not predict YouTube replay heatmaps"
+authors:
+  - family-names: Sahu
+    given-names: Barada
+  - family-names: Pandey
+    given-names: Shivesh
+year: 2026
+url: "https://arxiv.org/abs/2607.01400"
+repository-code: "https://github.com/mercurialsolo/tribe-replay-heatmaps"
+license: CC-BY-4.0
+identifiers:
+  - type: other
+    value: "arXiv:2607.01400"
+    description: "arXiv preprint"
+preferred-citation:
+  type: article
+  title: "A global predicted-fMRI drive signal from TRIBE does not predict YouTube replay heatmaps"
+  authors:
+    - family-names: Sahu
+      given-names: Barada
+    - family-names: Pandey
+      given-names: Shivesh
+  year: 2026
+  journal: "arXiv preprint arXiv:2607.01400"
+  url: "https://arxiv.org/abs/2607.01400"
