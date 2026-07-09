@@ -61,5 +61,18 @@ fetch the media; the behavioral target (heatmaps) is metadata.
 
 ## Citation
 
-If you use this, please cite the paper (see `paper/paper.tex`) and the TRIBE model
-([d'Ascoli et al., 2025](https://arxiv.org/abs/2507.22229)).
+If you use this code, the video-ID manifest, or the finding, please cite:
+
+```bibtex
+@misc{sahu2026tribereplay,
+  title         = {A global predicted-fMRI drive signal from TRIBE does not predict YouTube replay heatmaps},
+  author        = {Sahu, Barada and Pandey, Shivesh},
+  year          = {2026},
+  eprint        = {2607.01400},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE},
+  url           = {https://arxiv.org/abs/2607.01400}
+}
+```
+
+Please also cite the TRIBE model ([d'Ascoli et al., 2025](https://arxiv.org/abs/2507.22229)).
